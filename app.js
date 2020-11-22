@@ -6,6 +6,7 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path');
+  var async = require('async');
 //var methodOverride = require('method-override');
 var session = require('express-session');
 var app = express();
@@ -75,8 +76,28 @@ var SerialPort = require('serialport');
     error_value = true;
   });
   app.post('/realtime_seat', function (req, res) {
-        return res.json(200,{status:"ok",  error_val : error_value, d1 : d1, d2:d2, d3:d3, d4:d4, d5:d5, d6:d6, table1_zero :  table1_zero, table2_zero :  table2_zero, table1_one :  table1_one,table2_one :  table2_one});
-  });
+    var sql = "SELECT avg(table1)as table1, avg(table2)as table2 FROM table_status where DATE(remove_time) = DATE(NOW())";
+    pool.getConnection(function(err, con) {
+      if (err) {
+          console.log(err)
+          con.release();    
+      }else{
+          //console.log("Connected!");
+          async.parallel([
+            function(callback) { con.query(sql, callback) }
+          ], function(err, results) {
+            //console.log("sql2 : " + sql2);
+            if (err) {
+              console.log(err);
+              logger.info(err);
+            }
+            res.json(200,{status:"ok",  avg_data : results[0][0], error_val : error_value, d1 : d1, d2:d2, d3:d3, d4:d4, d5:d5, d6:d6, table1_zero :  table1_zero, table2_zero :  table2_zero, table1_one :  table1_one,table2_one :  table2_one});
+  
+        });  
+          con.release();         
+      }        
+    }); 
+});
 // all environments
 app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/views');

@@ -210,7 +210,7 @@ exports.booking_cancel = function(req, res, next){
  var value3 = req.body.people_count;
 console.log("delete :  " + value1)
   var sql1 = "DELETE FROM booking_list WHERE name= '"+ value1 +"' and phone_num='"+value2+"';"
-
+  
   pool.getConnection(function(err, con) {
      if (err) {
          console.log(err)
@@ -234,10 +234,16 @@ console.log("delete :  " + value1)
 
 };
 exports.admin_delete = function(req, res, next){
-           
-  var value1 = req.body.id_value;
+  var value1 = req.body.id_value;        
+  var value2 = req.body.people_cnt;
+  var tb = "";
+if(value2 > 2){
+  tb = "table1";
+}else{
+  tb = "table2";
+}
 
-console.log("delete :  " + value1);
+var sql = "INSERT INTO table_status ("+tb+") SELECT timestampdiff(second, booking_time, now())as tv FROM booking_list where no ='"+value1+"'"
   var sql1 = "DELETE FROM booking_list WHERE no= '"+ value1 + "'";
 
   pool.getConnection(function(err, con) {
@@ -247,6 +253,7 @@ console.log("delete :  " + value1);
      }else{
          //console.log("Connected!");
          async.parallel([
+           function(callback) { con.query(sql, callback) },
            function(callback) { con.query(sql1, callback) }
          ], function(err, results) {
            console.log("sql1 : " + sql1);

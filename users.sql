@@ -26,16 +26,27 @@ SET time_zone = "+00:00";
 -- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(5) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `first_name` text NOT NULL,
-  `last_name` text NOT NULL,
-  `mob_no` int(11) NOT NULL,
+  `address` text NOT NULL,
+  `mob_no` varchar(20) NOT NULL,
   `user_name` varchar(20) NOT NULL,
   `password` varchar(15) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `booking_list` (
+  `no` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `phone_num` varchar(45) NOT NULL,
+  `people_count` varchar(45) NOT NULL,
+  `table1` int DEFAULT NULL,
+  `table2` int DEFAULT NULL,
+  `booking_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

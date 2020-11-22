@@ -81,7 +81,7 @@
                     <%=data1[i].booking_time%>
                   </td>
                   <td>
-                    <button class="admin_delete_btn" onclick="Func6( <%=data1[i].name%>)">삭제</button>
+                    <button class="admin_delete_btn" onclick="Func6( <%=data1[i].name%>, <%=data1[i].people_count%>)">삭제</button>
                   </td>
                 <%}else{%>
                   <td>
@@ -135,7 +135,7 @@
             <%if(data2[0].user_name == 'admin'){%>
               html_code += '<td>' + phone_data + '</td>';
               html_code += '<td>' + btime_data + '</td>';
-              html_code +='<td><button class="admin_delete_btn" onclick="Func6( '+msg.data1[i].no+')">삭제</button></td></tr>';
+              html_code +='<td><button class="admin_delete_btn" onclick="Func6( '+msg.data1[i].no+"," + msg.data1[i].people_count+')">삭제</button></td></tr>';
                 <%}else{%>
                   html_code += '<td>' + btime_data + '</td></tr>';
                 <%}%>
@@ -186,6 +186,12 @@
         var d5_img = "";
         var d6_img = "";
         var error_value = "";
+        var t1 = "";
+        var t2 = "";
+        var hour1=0, min1 = 0, sec1=0;
+        var hour2=0, min2 = 0, sec2=0;
+        var hhmmss1 = "";
+        var hhmmss2 = "";
         //console.log("table1_zero " + JSON.stringify(msg.table1_zero))
         //console.log("table1_one " + JSON.stringify(msg.table1_one))
         //console.log("table2_zero " + JSON.stringify(msg.table2_zero))
@@ -205,6 +211,31 @@
         }
 
         html_code += d1_img + d2_img + d3_img + d4_img + d5_img + d6_img ;
+        
+        if(typeof msg.avg_data[0].table1 === 'undefined'){
+          t1 = 0;
+        }else{
+          t1 = msg.avg_data[0].table1;
+          console.log(t1)
+            sec1 = t1%60;
+            min1 = parseInt((t1%3600)/60);
+            hour1 = parseInt(t1/3600);
+            hhmmss1 = addZeros(hour1, 2)+":"+addZeros(min1, 2)+":"+addZeros(sec1, 2)
+        }
+        
+        if(typeof msg.avg_data[0].table2 === 'undefined'){
+          t2 = 0;
+        }else{
+          t2 = msg.avg_data[0].table2
+          console.log(t2)
+            sec2 = t2%60;
+            min2 = parseInt((t2%3600)/60);
+            hour2 = parseInt(t2/3600);
+            hhmmss2 = addZeros(hour2, 2)+":"+addZeros(min2, 2)+":"+addZeros(sec2, 2);
+        }
+
+        
+        html_code += "<div style='position:absolute;left:100px;bottom:40px'><span>평균대기 : " + hhmmss1 + "</span><span style='padding-left:80px'>평균대기 : " + hhmmss2 + "</span></div>";
         html_code += "<div style='position:absolute;left:120px;bottom:20px'><span>대기시간 : " + msg.table1_zero + "</span><span style='padding-left:130px'>대기시간 : " + msg.table2_zero + "</span></div>";
         html_code += "<img src='../img/table1.png' ><img src='../img/table2.png' >";
         document.getElementById("contents1").innerHTML = html_code;      // html_code 변수 내용을 id가 contents 에 표기 
@@ -220,7 +251,19 @@
       
       
   }    
-  
+  function addZeros(num, digit) { // 자릿수 맞춰주기
+	  var zero = '';
+	  num = num.toString();
+	  if (num.length < digit) {
+	    for (i = 0; i < digit - num.length; i++) {
+	      zero += '0';
+	    }
+	  }
+	  return zero + num;
+}
+
+
+
   </script>
   <script>
     /* 예약하기 버튼 눌렀을 때 동작 */
@@ -315,17 +358,17 @@
 
 <script>
   /* 삭제 버튼 눌렀을 때 동작 */
-  function Func6(id) {
-  var id_value = id;    
-
-
+  function Func6(id, pcnt) {
+  
+  console.log("************ : " + pcnt)
   $.ajax({
       url:'/admin_delete',
       async:true,
       type: 'POST',
       dataType:'json',
       data:{
-        id_value : id
+        id_value : id,
+        people_cnt : pcnt
       },
   success:function(msg){
     window.location.reload();
