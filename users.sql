@@ -46,7 +46,7 @@ CREATE TABLE `booking_list` (
   `table2` int DEFAULT NULL,
   `booking_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 
 CREATE TABLE `table_status` (
