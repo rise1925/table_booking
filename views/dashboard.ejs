@@ -99,29 +99,27 @@
         /* 실시간 예약자 리스트 */
         /* DB 에서 받은 값을 1초에 한번씩 페이지에서 갱신 */
         
-        setInterval(Func, 1000);
-        function Func() {
+        setInterval(Func1, 1000);
+        function Func1() {
         var html_code = "";
         var name = "";   
         var phone_num =  "";     
         var people_count =  ""; 
-
+        // post 방식으로 booking_show 으로 해당 data 송신
         $.ajax({
             url:'/booking_show',
             async:true,
             type: 'POST',
             dataType:'json',
             data:{
-              name : name,    // Gateway 아이디
-              phone_num : phone_num,
-              people_count : people_count
+              name : name,                   // 이름
+              phone_num : phone_num,         // 폰번호
+              people_count : people_count    // 인원수
             },
         success:function(msg){
           $('tbody#contents').empty();
-          $('div#park_check').empty();
-          //console.log("///// " + JSON.stringify(msg.data1[0].no))
-          for(var i = 0 ; i < msg.data1.length ; i++){ 
-            
+
+          for(var i = 0 ; i < msg.data1.length ; i++){             
             name_data = String(msg.data1[i].name);
             pcnt_data = String(msg.data1[i].people_count);
             phone_data = String(msg.data1[i].phone_num);
@@ -129,8 +127,7 @@
             
             html_code += '<tr><td>' + (i+1) + '</td>';
             html_code += '<td>' + name_data + '</td>';
-            html_code += '<td>' + pcnt_data + '</td>';
-            
+            html_code += '<td>' + pcnt_data + '</td>';            
             
             <%if(data2[0].user_name == 'admin'){%>
               html_code += '<td>' + phone_data + '</td>';
@@ -142,10 +139,8 @@
             
           }
           document.getElementById("contents").innerHTML = html_code;      // html_code 변수 내용을 id가 contents 에 표기 
-          //document.getElementById("park_check").innerHTML = car_check;    // car_check 변수 내용을 id가 park_check 에 표기
-    
           html_code = "";
-          //car_check = "";
+
         },
         error:function(err){
           alert("보내기 실패 "  + JSON.stringify(err));
@@ -155,103 +150,88 @@
         
     }    
     
-    </script>
+</script>
     <script>
       /* 실시간 테이블 현황 */
       /* DB 에서 받은 값을 1초에 한번씩 페이지에서 갱신 */      
-      setInterval(Func2, 1000);
+      setInterval(Func2, 1000);   // 1초에 한번씩 갱신 타이머
       function Func2() {
       var html_code = "";
       var name = "";       
       var phone_num = "";     
       var people_count = "";
       var date_value = "";
+      // post 방식으로 realtime_seat 으로 해당 data 송신
       $.ajax({
           url:'/realtime_seat',
           async:true,
           type: 'POST',
           dataType:'json',
           data:{
-            name : name,    // Gateway 아이디
-            phone_num : phone_num,
-            people_count : people_count,
-            date_value : date_value
+            name : name,                    // 이름
+            phone_num : phone_num,          // 폰번호
+            people_count : people_count,    // 인원수
+            date_value : date_value         // 날짜
           },
-      success:function(msg){
+      success:function(msg){                // 응답 데이터 = msg
         $('tbody#contents1').empty();
-        var d1_img = "";
-        var d2_img = "";
-        var d3_img = "";
-        var d4_img = "";
-        var d5_img = "";
-        var d6_img = "";
-        var error_value = "";
-        var t1 = "";
-        var t2 = "";
+        var d1_img = "",d2_img = "",d3_img = "",d4_img = "",d5_img = "",d6_img = "";    // 이미지 태그 저장
+        var t1 = "",t2 = "";
         var hour1=0, min1 = 0, sec1=0;
         var hour2=0, min2 = 0, sec2=0;
         var hhmmss1 = "";
         var hhmmss2 = "";
-        //console.log("table1_zero " + JSON.stringify(msg.table1_zero))
-        //console.log("table1_one " + JSON.stringify(msg.table1_one))
-        //console.log("table2_zero " + JSON.stringify(msg.table2_zero))
-        //console.log("table2_one " + JSON.stringify(msg.table2_one))
-        if(msg.d1 == 1){d1_img = "<img src='../img/1.png' style='position:absolute;left:115px;top:73px'>";}else { d1_img = "";}
-        if(msg.d2 == 1){d2_img = "<img src='../img/2.png' style='position:absolute;left:168px;top:73px'>";}else { d2_img = "";}
-        if(msg.d3 == 1){d3_img = "<img src='../img/3.png' style='position:absolute;left:115px;top:187px'>";}else { d3_img = "";}
-        if(msg.d4 == 1){d4_img = "<img src='../img/4.png' style='position:absolute;left:168px;top:187px'>";}else { d4_img = "";}
-        if(msg.d5 == 1){d5_img = "<img src='../img/1.png' style='position:absolute;left:250px;top:73px'>";}else { d5_img = "";}
-        if(msg.d6 == 1){d6_img = "<img src='../img/2.png' style='position:absolute;left:300px;top:187px'>";}else { d6_img = "";}
+
+        // 각 의자의 데이터가 1값이 오면 아래 img 태그가 오도록 함
+        if(msg.d1 == 1){d1_img = "<img src='../img/1.png' style='position:absolute;left:86px;top:104px'>";}else { d1_img = "";}
+        if(msg.d2 == 1){d2_img = "<img src='../img/2.png' style='position:absolute;left:201px;top:104px'>";}else { d2_img = "";}
+        if(msg.d3 == 1){d3_img = "<img src='../img/3.png' style='position:absolute;left:86px;top:159px'>";}else { d3_img = "";}
+        if(msg.d4 == 1){d4_img = "<img src='../img/4.png' style='position:absolute;left:201px;top:159px'>";}else { d4_img = "";}
+        if(msg.d5 == 1){d5_img = "<img src='../img/1.png' style='position:absolute;left:285px;top:130px'>";}else { d5_img = "";}
+        if(msg.d6 == 1){d6_img = "<img src='../img/2.png' style='position:absolute;left:401px;top:130px'>";}else { d6_img = "";}
         
-        if(msg.error_val == true){
+        if(msg.error_val == true){ // 연결이 끊겼을 때,
           html_code += "<img src='../img/disconnected.png' style='position:absolute;right:110px;top:20px;width:15px;vertical-align:middle'><div style='position:absolute;right:30px;top:20px;line-height:14px'>연결 끊어짐</div>";
         }
-        else{
+        else{                      // 연결 유지시
           html_code += "<img src='../img/connected.png' style='position:absolute;right:110px;top:20px;width:15px;vertical-align:middle'><div style='position:absolute;right:60px;top:20px;line-height:14px'>연결됨</div>";
         }
 
         html_code += d1_img + d2_img + d3_img + d4_img + d5_img + d6_img ;
         
-        if(typeof msg.avg_data[0].table1 === 'undefined'){
+        if(typeof msg.avg_data[0].table1 === 'undefined'){  // 테이블#1 평균값이 비어있을 때
           t1 = 0;
-        }else{
-          t1 = msg.avg_data[0].table1;
-          console.log(t1)
-            sec1 = t1%60;
+        }else{                                              
+          t1 = msg.avg_data[0].table1;                      // 테이블#1 에서 머무는 시간 평균값 '초'로 추출
+            sec1 = t1%60; 
             min1 = parseInt((t1%3600)/60);
             hour1 = parseInt(t1/3600);
-            hhmmss1 = addZeros(hour1, 2)+":"+addZeros(min1, 2)+":"+addZeros(sec1, 2)
+            hhmmss1 = addZeros(hour1, 2)+":"+addZeros(min1, 2)+":"+addZeros(sec1, 2); // 초를 시간,분,초로 다시 만들어 표기
         }
-        
-        if(typeof msg.avg_data[0].table2 === 'undefined'){
+        if(typeof msg.avg_data[0].table2 === 'undefined'){  // 테이블#1 평균값이 비어있을 때
           t2 = 0;
         }else{
-          t2 = msg.avg_data[0].table2
-          console.log(t2)
+          t2 = msg.avg_data[0].table2                       // 테이블#2 에서 머무는 시간 평균값 '초'로 추출
             sec2 = t2%60;
             min2 = parseInt((t2%3600)/60);
             hour2 = parseInt(t2/3600);
-            hhmmss2 = addZeros(hour2, 2)+":"+addZeros(min2, 2)+":"+addZeros(sec2, 2);
+            hhmmss2 = addZeros(hour2, 2)+":"+addZeros(min2, 2)+":"+addZeros(sec2, 2);  // 초를 시간,분,초로 다시 만들어 표기
         }
-
-        
         html_code += "<div style='position:absolute;left:100px;bottom:40px'><span>평균대기 : " + hhmmss1 + "</span><span style='padding-left:80px'>평균대기 : " + hhmmss2 + "</span></div>";
         html_code += "<div style='position:absolute;left:120px;bottom:20px'><span>대기시간 : " + msg.table1_zero + "</span><span style='padding-left:130px'>대기시간 : " + msg.table2_zero + "</span></div>";
         html_code += "<img src='../img/table1.png' ><img src='../img/table2.png' >";
         document.getElementById("contents1").innerHTML = html_code;      // html_code 변수 내용을 id가 contents 에 표기 
-        //document.getElementById("park_check").innerHTML = car_check;    // car_check 변수 내용을 id가 park_check 에 표기
-  
         html_code = "";
-        //car_check = "";
+
       },
       error:function(err){
         alert("보내기 실패 "  + JSON.stringify(err));
       }
       });
-      
-      
-  }    
-  function addZeros(num, digit) { // 자릿수 맞춰주기
+   }    
+</script>
+<script>
+  function addZeros(num, digit) { // 자릿수 두자리 맞춰주기
 	  var zero = '';
 	  num = num.toString();
 	  if (num.length < digit) {
@@ -261,9 +241,6 @@
 	  }
 	  return zero + num;
 }
-
-
-
   </script>
   <script>
     /* 예약하기 버튼 눌렀을 때 동작 */
@@ -272,19 +249,19 @@
     var name = "<%=data2[0].first_name%>";       
     var phone_num =  String("<%=data2[0].mob_no%>");     
     var people_count =  document.getElementById("people").value;
-
+    // post 방식으로 booking_data 으로 해당 data 송신
     $.ajax({
         url:'/booking_data',
         async:true,
         type: 'POST',
         dataType:'json',
         data:{
-          name : name,    // Gateway 아이디
-          phone_num : phone_num,
-          people_count : people_count
+          name : name,                 // 이름
+          phone_num : phone_num,       // 폰번호
+          people_count : people_count  // 인원수
         },
     success:function(msg){
-      window.location.reload();
+      window.location.reload();        // 페이지 갱신
     },
     error:function(err){
       alert("보내기 실패 "  + JSON.stringify(err));
@@ -302,19 +279,19 @@
     var name = "<%=data2[0].first_name%>";       
     var phone_num =  String("<%=data2[0].mob_no%>");     
     var people_count =  document.getElementById("people").value;
-
+    // post 방식으로 booking_cancel 으로 해당 data 송신
     $.ajax({
         url:'/booking_cancel',
         async:true,
         type: 'POST',
         dataType:'json',
         data:{
-          name : name,    // Gateway 아이디
-          phone_num : phone_num,
-          people_count : people_count
+          name : name,                 // 이름
+          phone_num : phone_num,       // 폰번호
+          people_count : people_count  // 인원수
         },
     success:function(msg){
-      window.location.reload();
+      window.location.reload();        // 페이지 갱신
     },
     error:function(err){
       alert("보내기 실패 "  + JSON.stringify(err));
@@ -332,19 +309,19 @@
   var name = document.getElementById("booking_name").value;    
   var phone_num =  document.getElementById("pnum").value; 
   var people_count =  document.getElementById("people").value;
-
+  // post 방식으로 booking_data 으로 해당 data 송신
   $.ajax({
       url:'/booking_data',
       async:true,
       type: 'POST',
       dataType:'json',
       data:{
-        name : name,    // Gateway 아이디
-        phone_num : phone_num,
-        people_count : people_count
+        name : name,                 // 이름
+        phone_num : phone_num,       // 폰번호
+        people_count : people_count  // 인원수
       },
   success:function(msg){
-    window.location.reload();
+    window.location.reload();        // 페이지 갱신
   },
   error:function(err){
     alert("보내기 실패 "  + JSON.stringify(err));
@@ -359,19 +336,18 @@
 <script>
   /* 삭제 버튼 눌렀을 때 동작 */
   function Func6(id, pcnt) {
-  
-  console.log("************ : " + pcnt)
+  // post 방식으로 admin_delete 으로 해당 data 송신
   $.ajax({
       url:'/admin_delete',
       async:true,
       type: 'POST',
       dataType:'json',
       data:{
-        id_value : id,
-        people_cnt : pcnt
+        id_value : id,             // 삭제한 레코드 id 값
+        people_cnt : pcnt          // 인원수
       },
   success:function(msg){
-    window.location.reload();
+    window.location.reload();      // 페이지 갱신
   },
   error:function(err){
     alert("보내기 실패 "  + JSON.stringify(err));

@@ -270,11 +270,7 @@ var sql = "INSERT INTO table_status ("+tb+") SELECT timestampdiff(second, bookin
 
 };
 exports.booking_show = function(req, res, next){
-           
-   var value1 = req.body.name;
-  var value2 = req.body.phone_num;
-  var value3 = req.body.people_count;
-//console.log("//////////// " + value1)
+
    var sql="SELECT no, name, phone_num, people_count, DATE_FORMAT(booking_time, '%Y-%m-%d %H:%i:%s')booking_time FROM booking_list;";
    
    pool.getConnection(function(err, con) {
@@ -291,11 +287,9 @@ exports.booking_show = function(req, res, next){
               console.log(err);
               logger.info(err);
             }
-
             res.json(200,{status:"ok",  data1:results[0][0]});
         });  
           con.release();         
       }        
     }); 
-
 };

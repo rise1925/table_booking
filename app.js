@@ -21,7 +21,9 @@ var table1_zero = 0;
 var table1_one = 0;
 var table2_zero = 0;
 var table2_one = 0;
+var d1arr = new Array(),d2arr = new Array(),d3arr = new Array(),d4arr = new Array(),d5arr = new Array(),d6arr = new Array();
 var d1 = 0,d2 = 0,d3 = 0,d4 = 0,d5 = 0,d6 = 0;
+var b_d1 = 0,b_d2 = 0,b_d3 = 0,b_d4 = 0,b_d5 = 0,b_d6 = 0;
 var error_value = false;
 var SerialPort = require('serialport');
     serial = new SerialPort('COM4', {
@@ -41,25 +43,35 @@ var SerialPort = require('serialport');
     if(!Number.isNaN(d1) && !Number.isNaN(d2) && !Number.isNaN(d3) && !Number.isNaN(d4)){         // 가끔 NaN 값을 필터링 하기 위함
       if(d1 == 0 && d2 == 0 && d3 == 0 && d4 == 0){                                               // 테이블 #1 모두 자리를 비웠을 때 카운트 시작
         table1_zero++;
-      }else if(d1 == 1 || d2 == 1 || d3 == 1 || d4 == 1){                                         // 테이블 #1 에서 1명이라도 자리에 돌아오면 카운트 초기화
+      }else if(d1 == 1 || d2 == 1 || d3 == 1 || d4 == 1){ 
+        b_d1 = d1; b_d2=d2; b_d3=d3;b_d4=d4;
         table1_one++;
         if(table1_one > 10){                                                                      // 초기화 할때 오차를 생각하여 연속으로 10번이상 오면 초기화
           table1_zero = 0;
           table1_one = 0;
-        }
+        }       
       }      
+    }else{  // 중간 데이터 손실 무시
+      if(Number.isNaN(d1)){d1=b_d1}
+      if(Number.isNaN(d2)){d2=b_d2}
+      if(Number.isNaN(d3)){d3=b_d3}
+      if(Number.isNaN(d4)){d4=b_d4}
     }
 
     if(!Number.isNaN(d5) && !Number.isNaN(d6)){                                                    // 가끔 NaN 값을 필터링 하기 위함
       if(d5 == 0 && d6 == 0 ){                                                                     // 테이블 #2 모두 자리를 비웠을 때 카운트 시작
         table2_zero++;
-      }else if(d5 == 1 || d6 == 1){                                                                // 테이블 #2 에서 1명이라도 자리에 돌아오면 카운트 초기화
+      }else if(d5 == 1 || d6 == 1){  
+        b_d5 = d5; b_d6=d6;                                                              // 테이블 #2 에서 1명이라도 자리에 돌아오면 카운트 초기화
         table2_one++;
         if(table2_one > 10){                                                                       // 초기화 할때 오차를 생각하여 연속으로 10번이상 오면 초기화
           table2_zero = 0;
           table2_one = 0;
         }
       }      
+    }else{  // 중간 데이터 손실 무시
+      if(Number.isNaN(d5)){d5=b_d5}
+      if(Number.isNaN(d6)){d6=b_d6}
     }
     console.log("no : " + no++ + "    ,    table #1 zero: " + table1_zero + "    ,    table #2 zero: " + table2_zero )
     console.log("no : " + no++ + "    ,    table #1 one: " + table1_one + "    ,    table #2 one: " + table2_one )
